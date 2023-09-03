@@ -1,5 +1,6 @@
 import sys
 import pygame
+from settings import Settings
 
 title = '星舰大战'
 
@@ -10,10 +11,10 @@ class AlienInvasion:
     def __init__(self):
         """初始化游戏窗口和游戏资源"""
         pygame.init()
+        self.settings = Settings()
 
-        self.screen = pygame.display.set_mode((1200, 800))
-        pygame.display.set_caption(title)
-        self.bg_color = (230, 230, 230)
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        pygame.display.set_caption(self.settings.title)
         self.clock = pygame.time.Clock()
 
     def run_game(self):
@@ -25,7 +26,7 @@ class AlienInvasion:
                     sys.exit()
 
             # 让最近绘制的屏幕可见
-            self.screen.fill(self.bg_color)
+            self.screen.fill(self.settings.bg_color)
             pygame.display.flip()
             self.clock.tick(165)
 

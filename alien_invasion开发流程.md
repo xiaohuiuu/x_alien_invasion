@@ -82,3 +82,31 @@ def run_game(self):
     self.clock.tick(165)
 ```
 
+### 4 创建setting类
+
+每次给游戏添加新的功能时，我们都需要引入一些新的设置，下面来编写一个Setting模块，其中包含一个Setting类，用于储存设置，以免于在代码中到处添加其他的设置，看着简洁
+
+```python
+class Settings:
+    """初始化游戏的设置"""
+    def __init__(self):
+        # 游戏窗口名字
+        self.title = '星舰大战'
+        # 窗口宽度
+        self.screen_width = 1200
+        # 窗口高度
+        self.screen_height = 800
+        # 窗口的背景颜色
+        self.bg_color = (230, 230, 230)
+        
+# 我们在alien_invasion做以下修改
+from settings import Settings
+def __init__(self):
+    self.settings = Settings()
+    self.screen = 								pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
+    
+    
+def run_game(self):
+    self.screen.fill(self.settings.bg_color)
+```
+
