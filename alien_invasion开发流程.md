@@ -278,3 +278,21 @@ class Ship:
         # 根据self.x的值更新飞船的位置
 ```
 
+### 4 限制飞船的活动范围
+
+目前，当我们按住方向键足够长的时间，飞船就会飞到屏幕的外边，所以我们要修改ship类的update方法。
+
+```python
+    def update(self):
+        """根据移动标志移动飞船"""
+        if self.move_right and self.rect.right < self.screen_rect.right:
+            self.x += self.settings.ship_speed
+        if self.move_left and self.rect.left > 0:
+            self.x -= self.settings.ship_speed
+        # 根据self.x的值更新飞船的位置
+        self.rect.x = self.x
+```
+
+### 5 重构\_check_event()方法
+
+随着游戏的开发，此函数又变得越来越长，因此，我们将keydown和keyup拆分成两个方法

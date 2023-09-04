@@ -26,15 +26,9 @@ class AlienInvasion:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = True
-                elif event.key == pygame.K_LEFT:
-                    self.ship.move_left = True
+                self._check_key_down(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.move_left = False
+                self._check_key_up(event)
 
     def _update_screen(self):
         """更新屏幕"""
@@ -43,6 +37,18 @@ class AlienInvasion:
         # 画出飞船
         self.ship.blitme()
         pygame.display.flip()
+
+    def _check_key_down(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.move_left = True
+
+    def _check_key_up(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.move_left = False
 
     def run_game(self):
         """开始游戏的主循环"""
