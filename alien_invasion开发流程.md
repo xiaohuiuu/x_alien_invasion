@@ -141,3 +141,80 @@ class Ship:
 
 ```
 
+### 2 在屏幕上绘制飞船
+
+```python
+# 接下来更新alien_invasion.py,创建一艘飞船，并调用其方法blitme()
+
+from settings import Settings
+from ship import Ship
+
+class AlienInvasion:
+    def __init__(self):
+        self.ship = Ship(self)
+        
+    def run_game(self):
+        self.ship.blitem()
+```
+
+## 五：重构 \_check_event()方法和_update_screen()方法
+
+在大型项目中，经常需要在添加新代码前重构既有的代码。重构旨在简化既有的代码的结构，使其更容易扩展。在本环节把越来越长的run_game()方法拆成两个辅助方法。辅助方法一般只在类中调用，不会在类外调用。在Python中，辅助方法使用单下划线打头。
+
+### 1 \_check_event方法
+
+```python
+# 我们把管理事件的代码移动到_check_event()方法中，以简化run_game()方法并隔离时间循环。
+def run_game(self):
+    while True:
+        self._check_event()
+    
+def _check_event(self):
+    """响应按键和鼠标事件"""
+    for event in pygame.event.get():
+    	if event.type == pygame.QUIT:
+    		sys.exit()
+```
+
+### 2 _update_screen方法
+
+```python
+# 为了更进一步的简化run_game()方法，我们把更新屏幕的代码移动到_update_screen()方法中
+def run_game(self):
+    while True:
+        self._check_event()
+    	self._update_screen()
+		self.clock.tick(165)
+def _update_screen(self):
+    # 让最近绘制的屏幕可见
+            self.screen.fill(self.settings.bg_color)
+            # 画出飞船
+            self.ship.blitme()
+            pygame.display.flip()
+            
+```
+
+## 六：驾驶飞船
+
+### 1 响应按键并允许持续向右移动
+
+在pygame中，时间都是pygame.event.get()获取的，需要在\_check_event()中指定要检查事件的类型，没当用户按下一个键时，都会在pygame中产生一个keydown事件。
+
+```python
+    def _check_event(self):
+        """侦听键盘和鼠标事件"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    # 飞船向右移动
+                    self.ship.rect.x += 10
+                elif event.key == pygame.K_LEFT:
+                    # 飞船向左移动
+                    self.ship.rect.x -= 10
+    # 但这样优缺点，我们需要按一次键，它移动一次，
+    # 我们需要将它改动成，按下键不松开，他就一直移动
+    # 这时候，我们需要使用keyup事件类型，并且，我们设置一个标志move_right为False,当move_right为false  	 # 时，飞船不会移动，当keydown时，move_right为True，飞船移动，当keyup时，move_right为False，飞船	  # 停止移动
+```
+
