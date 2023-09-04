@@ -9,3 +9,5 @@ class Settings:
         self.screen_height = 800
         # 窗口的背景颜色
         self.bg_color = (230, 230, 230)
+        # 控制飞船的速度
+        self.ship_speed = 5

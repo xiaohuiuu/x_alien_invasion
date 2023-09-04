@@ -238,20 +238,43 @@ update(self):
 还需要对\_check_event()进行修改
 
 ```python
-    def _check_event(self):
-        """侦听键盘和鼠标事件"""
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = True
-                elif event.key == pygame.K_LEFT:
-                    self.ship.move_left = True
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.move_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.move_left = False
+def _check_event(self):
+    """侦听键盘和鼠标事件"""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                self.ship.move_right = True
+            elif event.key == pygame.K_LEFT:
+                self.ship.move_left = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_RIGHT:
+                self.ship.move_right = False
+            elif event.key == pygame.K_LEFT:
+                self.ship.move_left = False
+```
+
+### 3 调整飞船的速度
+
+```python
+# 我们可以在Settings类追溯添加属性ship_speed来控制飞船的速度
+class Settings:
+    def __init__(self):
+        self.ship_speed = 5
+        
+class Ship:
+    def __init__(self,ai_game):
+        self.settings = ai_game.settings
+        
+        # 在飞船的属性x存储一个浮点数
+        self.x = float(self.rect.x)
+        
+    def update(self):
+        if self.move_right:
+            self.x += self.settings.ship_speed
+        if self.move_left:
+            self.x -= self.settings.ship_speed
+        # 根据self.x的值更新飞船的位置
 ```
 

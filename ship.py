@@ -9,6 +9,8 @@ class Ship:
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
 
+        self.settings = ai_game.settings
+
         # 加载飞船图像并获取其外接矩形
         self.image = pygame.image.load('image/SpaceShip_0.png')
         self.rect = self.image.get_rect()
@@ -20,6 +22,8 @@ class Ship:
         self.move_right = False
         self.move_left = False
 
+        self.x = float(self.rect.x)
+
     def blitme(self):
         """在指定位置绘制飞船"""
         self.screen.blit(self.image, self.rect)
@@ -27,6 +31,8 @@ class Ship:
     def update(self):
         """根据移动标志移动飞船"""
         if self.move_right:
-            self.rect.x += 5
+            self.x += self.settings.ship_speed
         if self.move_left:
-            self.rect.x -= 5
+            self.x -= self.settings.ship_speed
+        # 根据self.x的值更新飞船的位置
+        self.rect.x = self.x
