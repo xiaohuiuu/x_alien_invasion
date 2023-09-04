@@ -18,6 +18,7 @@ class Ship:
 
         # 判断飞船是否移动的标志
         self.move_right = False
+        self.move_left = False
 
     def blitme(self):
         """在指定位置绘制飞船"""
@@ -26,4 +27,6 @@ class Ship:
     def update(self):
         """根据移动标志移动飞船"""
         if self.move_right:
-            self.rect.x += 10
+            self.rect.x += 5
+        if self.move_left:
+            self.rect.x -= 5

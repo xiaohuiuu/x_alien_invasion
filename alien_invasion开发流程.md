@@ -218,3 +218,40 @@ def _update_screen(self):
     # 这时候，我们需要使用keyup事件类型，并且，我们设置一个标志move_right为False,当move_right为false  	 # 时，飞船不会移动，当keydown时，move_right为True，飞船移动，当keyup时，move_right为False，飞船	  # 停止移动
 ```
 
+### 2 左右移动
+
+对ship类和update()方法进行修改
+
+```python
+def __init__(self):
+    # 移动标志
+    move_right = False
+    move_left = False
+    
+update(self):
+    if move_right:
+        self.rect.x += 10
+    if move_left:
+        self.rect.x -= 10
+```
+
+还需要对\_check_event()进行修改
+
+```python
+    def _check_event(self):
+        """侦听键盘和鼠标事件"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.move_right = True
+                elif event.key == pygame.K_LEFT:
+                    self.ship.move_left = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.move_right = False
+                elif event.key == pygame.K_LEFT:
+                    self.ship.move_left = False
+```
+
