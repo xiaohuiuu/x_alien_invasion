@@ -526,3 +526,7 @@ def _update_bullets(self):
                     self.bullets.remove(bullet)
 ```
 
+## 九 创建第一个外星人
+
+### 1 创建Alien类
+
