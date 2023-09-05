@@ -489,3 +489,23 @@ def run_game(self):
             self.clock.tick(165)
 ```
 
+### 6 限制子弹的数量
+
+首先将允许的子弹的数量设置保存在Settings类中
+
+```python
+class Settings:
+    def __init__(self):
+        self.bullets_allow = 6
+```
+
+在Alien_invasion中的\_fire_bullet中检测当前屏幕的子弹数量，如果小于6个，再发射子弹
+
+```python
+    def _fire_bullet(self):
+        """创建一颗子弹，并将它加入到bullets中"""
+        if len(self.bullets) < self.settings.bullets_allow
+        	new_bullet = Bullet(self)
+        	self.bullets.add(new_bullet)
+```
+
