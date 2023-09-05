@@ -664,3 +664,66 @@ def update(self):
     self.rect.x = self.x
 ```
 
+### 2 创建表示外星人移动方向的设置
+
+下面创建表示外星人到达屏幕右边缘后，向下移动，再向左移动。实现这种行为的代码
+
+```python
+# 外星人到达右边缘后向下移动的速度
+        self.fleet_drop_speed = 4
+        # 移动方向
+        self.fleet_direction = 1
+```
+
+实现fleet_direction可以实用文本，例如，left和right，但是这样需要使用if语句来实现外星人的移动，所以我们使用1和-1来表示方向
+
+### 3 检查外星人是否到达了屏幕边缘
+
+现在需要些一个方法来判断外星人是否到达了屏幕边缘，还需要修改update()来外星人沿着正确的方向移动
+
+```python
+def check_edges(self):
+    """如果外星人到达了屏幕边缘，返回TRUE"""
+    screen_rect = self.screen.get_rect()
+    return (self.rect.right >= screen_rect.right) or (self.rect.left <= 0)
+```
+
+修改update()
+
+```python
+def update(self):
+    """向右或向左移动外星人"""
+    self.x += self.settings.alien_speed * self.settings.fleet_direction
+    self.rect.x = self.x
+```
+
+### 4 向下移动外星舰队并改变移动方向
+
+当有外星人到达左右边缘时，需要整个外星人舰队向下移动并改变他们的移动方向
+
+需要在Alien_Invasion中添加两个方法，\_check_fleet_edges()和\_change_fleet_direction()，并修改\_update_alien()
+
+```python
+    def _create_alien(self, x_position, y_position):
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+        new_alien.rect.y = y_position
+        self.aliens.add(new_alien)
+
+    def _change_fleet_direction(self):
+        """将整个外星人舰队向下移动，并修改移动方向"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+```
+
+对update_alien()的修改
+
+```python
+    def update_alien(self):
+        """更新外星人位置的方法"""
+        self._check_fleet_edges()
+        self.aliens.update()
+```
+

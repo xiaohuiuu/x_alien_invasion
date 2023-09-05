@@ -21,3 +21,7 @@ class Settings:
 
         # 外星人相关设置
         self.alien_speed = 1.0
+        # 外星人到达右边缘后向下移动的速度
+        self.fleet_drop_speed = 4
+        # 移动方向
+        self.fleet_direction = 1

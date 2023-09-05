@@ -93,8 +93,22 @@ class AlienInvasion:
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
 
+    def _change_fleet_direction(self):
+        """将整个外星人舰队向下移动，并修改移动方向"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+
+    def _check_fleet_edges(self):
+        """在有外星人到达屏幕边缘后需要做的事"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
     def update_alien(self):
         """更新外星人位置的方法"""
+        self._check_fleet_edges()
         self.aliens.update()
 
     def _update_screen(self):
