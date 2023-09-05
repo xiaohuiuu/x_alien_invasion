@@ -727,3 +727,38 @@ def update(self):
         self.aliens.update()
 ```
 
+## 十一：击落外星人
+
+### 1 检查子弹和外星人的碰撞
+
+为了让子弹能够击落外星人，我们将使用sprite.groupcollide()检测两个编组成员之间的碰撞
+
+当子弹击中外星人后，我们需要马上知道，一遍在碰撞发生之后让子弹立即消失。为此。。将在更新所有子弹的位置后（绘制子弹前）立即检查碰撞。
+
+sprite.groupcollide()函数将一个编组中的每一个rect元素与另一个编组的所有的rect元素进行比较，并返回一个字典，其中包含了发生碰撞的子弹和外星人
+
+在\_update_bullets()方法末尾，添加如下检查子弹和外星人碰撞的代码
+
+```python
+def _update_bullets(self):
+    """更新子弹的位置，并删除已经消失的子弹"""
+    
+    # 检查是否有子弹击中了外星人
+    # 如果是，就删除响应的子弹和外星人
+    collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+```
+
+### 2 生成新的外星人舰队
+
+这个游戏的特点是，当一个外星人舰队别完全消灭后，又出现新的外星人舰队
+
+检查aliens编组是否为空，如果为空，调用\_create_fleet()，我们将在\_update_bullets()末尾执行这项任务，，因为外星人都是在这里击落的。
+
+```python
+def _update_bullets(self):
+    """删除现有的子弹，并创建新的外星人舰队"""
+    if not self.aliens:
+        self.bullets.empty()
+        self._create_fleet()
+```
+
