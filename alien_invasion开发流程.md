@@ -762,3 +762,30 @@ def _update_bullets(self):
         self._create_fleet()
 ```
 
+### 3 重构\_update_bullets()
+
+可以将子弹和外星人碰撞的代码移动到新的方法中
+
+```python
+    def _update_bullets(self):
+        """更新子弹的位置，并删除已经消失的子弹的位置"""
+        # 更新子弹的位置
+        self.bullets.update()
+        # 删除已经消失的子弹
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+        # 检查是否有子弹击中了外星人
+        # 如果是，就删除响应的子弹和外星人
+        self._check_bullet_alien_collisions()
+
+    def _check_bullet_alien_collisions(self):
+        """响应外星人和子弹的碰撞"""
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        # 删除现有的子弹，并创建新的外星人舰队
+        if not self.aliens:
+            self.bullets.empty()
+            self._create_fleet()
+```
+
