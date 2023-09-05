@@ -67,7 +67,6 @@ class AlienInvasion:
         """创建一颗子弹，并将它加入到bullets中"""
         new_bullet = Bullet(self)
         self.bullets.add(new_bullet)
-        print('fire')
 
     def run_game(self):
         """开始游戏的主循环"""
@@ -75,6 +74,10 @@ class AlienInvasion:
             self._check_event()
             self.ship.update()
             self.bullets.update()
+            # 删除已经消失的子弹
+            for bullet in self.bullets.copy():
+                if bullet.rect.bottom <= 0:
+                    self.bullets.remove(bullet)
             self._update_screen()
             self.clock.tick(165)
 

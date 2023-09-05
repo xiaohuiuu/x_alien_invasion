@@ -466,3 +466,26 @@ def run_game(self):
         pygame.display.flip()
 ```
 
+### 5 删除已经消失的子弹
+
+虽然目前子弹会在屏幕边缘消失，但是，仅仅是因为子弹无法在pygame窗口外渲染，实际上子弹依然存在。
+
+随着发射的子弹越来越多，占用系统的资源也越来越大，所以我们需要将小时的子弹删除，
+
+很简单，当子弹的y=0时，删除
+
+```python
+    def run_game(self):
+        """开始游戏的主循环"""
+        while True:
+            self._check_event()
+            self.ship.update()
+            self.bullets.update()
+            # 删除已经消失的子弹
+            for bullet in self.bullets.copy():
+                if bullet.rect.bottom <= 0:
+                    self.bullets.remove(bullet)
+            self._update_screen()
+            self.clock.tick(165)
+```
+
