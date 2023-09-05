@@ -644,3 +644,23 @@ def _create_alien(self, x_position, y_position):
     self.aliens.add(new_alien)
 ```
 
+## 十 让外星舰队移动
+
+### 1 向右移动外星舰队
+
+移动外星舰队需要使用alien.py中的update()方法，对于外星舰队中的每个外星人都需要调用方法，首先添加一个控制外星人速度的设置
+
+```python
+def __init__(self):
+    self.alien_speed = 1.0
+```
+
+然后在alien.py中实现update()
+
+```python
+def update(self):
+    """向右移动外星人"""
+    self.x += self.settings.alien_speed
+    self.rect.x = self.x
+```
+

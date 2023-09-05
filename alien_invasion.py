@@ -93,6 +93,10 @@ class AlienInvasion:
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
 
+    def update_alien(self):
+        """更新外星人位置的方法"""
+        self.aliens.update()
+
     def _update_screen(self):
         """更新屏幕"""
         # 让最近绘制的屏幕可见
@@ -110,6 +114,7 @@ class AlienInvasion:
         while True:
             self._check_event()
             self.ship.update()
+            self.update_alien()
             self._update_bullets()
             self._update_screen()
             self.clock.tick(165)
