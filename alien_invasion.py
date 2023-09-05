@@ -3,6 +3,7 @@ import pygame
 from time import sleep
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -18,13 +19,15 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
 
-        self.game_active = True
+        self.game_active = False
 
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption(self.settings.title)
         self.clock = pygame.time.Clock()
         # 实例化GameStats
         self.stats = GameStats(self)
+        # 创建play按钮
+        self.play_button = Button(self, 'Play')
         # 实例化飞船
         self.ship = Ship(self)
         # 子弹
@@ -42,6 +45,14 @@ class AlienInvasion:
                 self._check_key_down(event)
             elif event.type == pygame.KEYUP:
                 self._check_key_up(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+    def _check_play_button(self, mouse_pos):
+        """在玩家点击play后开始游戏"""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.game_active = True
 
     def _check_key_down(self, event):
         """检测键盘按下事件"""
@@ -170,6 +181,9 @@ class AlienInvasion:
         # 画出飞船
         self.aliens.draw(self.screen)
         self.ship.blitme()
+        # 如果游戏处于非活跃状态（game_active = False)，绘制play按钮
+        if not self.game_active:
+            self.play_button.draw_button()
         pygame.display.flip()
 
     def run_game(self):

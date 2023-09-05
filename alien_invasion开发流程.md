@@ -950,5 +950,117 @@ def run_game(self):
 
 ## 十三：计分，添加play按钮
 
+本节添加一个play按钮，它在游戏开始前和游戏结束后出现，让玩家能够开始新的游戏
 
+ 当前这个游戏在玩家运行alien_invasion..py是就开始了，下面让游戏在一开始处于非活跃状态，并提示玩家点击开始游戏，修改AlienInvasion类的\__init__()方法
+
+```python
+def __init__(self):
+    self.game_active = False
+```
+
+### 1 创建button类
+
+pygame没有内置的创建按钮的方法，我们将编写一个button类，用于创建一个带标签的实心矩形
+
+```python
+import pygame.font
+
+
+class Button:
+    """微游戏创建按钮的类"""
+
+    def __init__(self, ai_game, msg):
+        """初始化按钮属性"""
+        self.screen = ai_game.screen
+        self.screen_rect = self.screen.get_rect()
+
+        # 设置按钮的尺寸和其他属性
+        self.width, self.height = 200, 50
+        self.button_color = (0, 135, 0)
+        self.text_color = (255, 255, 244)
+        self.font = pygame.font.SysFont(None, 48)
+
+        # 创建按钮的rect对象，并使其居中
+        self.rect = pygame.Rect(0, 0, self.width, self.height)
+        self.rect.center = self.screen_rect.center
+
+        # 按钮标签只需要创建一次
+        self._prep_msg(msg)
+        
+        def _prep_msg(self, msg):
+    		"""将msg渲染为图像，并使其在按钮上居中"""
+    		self.msg_image = self.font.render(msg, True, self.text_color, 		self.button_color)
+    		self.msg_image_rect = self.msg_image.get_rect()
+    		self.msg_image_rect.center = self.rect.center
+```
+
+创建\_prep_msg
+
+```python
+def _prep_msg(self, msg):
+    """将msg渲染为图像，并使其在按钮上居中"""
+    self.msg_image = self.font.render(msg, True, self.text_color, self.button_color)
+    self.msg_image_rect = self.msg_image.get_rect()
+    self.msg_image_rect.center = self.rect.center
+```
+
+最后，创建draw_button()方法
+
+```python
+def draw_button(self):
+    """绘制一个用颜色填充的按钮，再绘制文本"""
+    self.screen.fill(self.button_color,self.rect)
+    self.screen.blit(self.msg_image, self.msg_image_rect)
+```
+
+### 2 在屏幕上绘制按钮
+
+在类AlienInvasion中使用Button类创建一个按钮
+
+```python
+from button import Button
+
+class AlienInvasion:
+    def __init__(self):
+        self.play_button = Button(self, 'play')
+```
+
+要想显示按钮，我们需要在\_update_screen中钓友draw_button（）方法
+
+```python
+def _update_screen(self):
+    # 如果游戏处于非活跃状态（game_active = False)，绘制play按钮
+    if not self.game_active:
+        self.play_button.draw_button()
+```
+
+### 3 开始游戏
+
+为了实现点击play按钮开始游戏，在_check_event()末尾添加一下elif代码块，以监视与这个按钮相关的鼠标事件
+
+```python
+def _check_event(self):
+    """侦听键盘和鼠标事件"""
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            self._check_key_down(event)
+        elif event.type == pygame.KEYUP:
+            self._check_key_up(event)
+        # 添加检测鼠标相关事件
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            self._check_play_button(mouse_pos)
+```
+
+\_check_play_button()的代码如下
+
+```python
+def _check_play_button(self, mouse_pos):
+    """在玩家点击play后开始游戏"""
+    if self.play_button.rect.collidepoint(mouse_pos):
+        self.game_active = True
+```
 
