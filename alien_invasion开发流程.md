@@ -869,5 +869,86 @@ def update_alien(self):
 将center_ship(self)添加到ship类中
 
 ```python
+def center_ship(self):
+    """将飞船放在屏幕底部中央"""
+    self.rect.midbottom = self.screen_rect.midbottom
+    self.x = float(self.rect.x)
 ```
+
+### 3 有外星人达到屏幕的下边缘
+
+为了检测这种情况，我们在alien_invasion添加新的方法
+
+```python
+def _check_aliens_bottom(self):
+    """检查是否有外星人到达了屏幕底部"""
+    for alien in self.aliens.sprites():
+        if alien.rect.bottom >= self.settings.screen_height:
+            # 和外星人碰撞到飞船一样的处理
+            self._ship_hit()
+            break
+```
+
+在update_aliens()中调用\_check_aliens_bottom()
+
+```python
+def update_aliens(self):
+    self._check_aliens_bottom()
+```
+
+### 4 游戏结束
+
+现在游戏看起来完整了，但永远不会结束
+
+我们需要在飞船用完之后游戏结束
+
+我们需要在alien_invasion中设置game_active属性来控制游戏
+
+```python
+def __init__(self):
+    self.game_active = True
+```
+
+
+
+接下来在\_ship_hit()中添加代码，在玩家的飞船用完之后，将game_active设置为False
+
+```python
+def _ship_hit(self):
+    """响应飞船和外星人的碰撞"""
+    if self.stats.ships_left > 0:
+        # 将ship_left -1
+        self.stats.ships_left -= 1
+        # 清空外星人列表和子弹列表
+        self.bullets.empty()
+        self.aliens.empty()
+        # 创建一个新的外星人舰队,并将飞船放在屏幕底部的中央
+        self._create_fleet()
+        self.ship.center_ship()
+        # 暂停
+        sleep(0.5)
+    else:
+        self.game_active = False
+```
+
+### 5 确定应运行游戏的哪些部分
+
+我们需要确定哪些部分是在游戏处于活跃状态下才运行
+
+```python
+def run_game(self):
+    """开始游戏的主循环"""
+    while True:
+        self._check_event()
+        if self.game_active:
+            self.ship.update()
+            self.update_alien()
+            self._update_bullets()
+            self._update_screen()
+            self.clock.tick(165)
+```
+
+## 十三：计分，添加play按钮
+
+
 

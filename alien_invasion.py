@@ -18,6 +18,8 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
 
+        self.game_active = True
+
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption(self.settings.title)
         self.clock = pygame.time.Clock()
@@ -124,16 +126,27 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """响应飞船和外星人的碰撞"""
-        # 将ship_left -1
-        self.stats.ships_left -= 1
-        # 清空外星人列表和子弹列表
-        self.bullets.empty()
-        self.aliens.empty()
-        # 创建一个新的外星人舰队,并将飞船放在屏幕底部的中央
-        self._create_fleet()
-        self.ship.center_ship()
-        # 暂停
-        sleep(0.5)
+        if self.stats.ships_left > 0:
+            # 将ship_left -1
+            self.stats.ships_left -= 1
+            # 清空外星人列表和子弹列表
+            self.bullets.empty()
+            self.aliens.empty()
+            # 创建一个新的外星人舰队,并将飞船放在屏幕底部的中央
+            self._create_fleet()
+            self.ship.center_ship()
+            # 暂停
+            sleep(0.5)
+        else:
+            self.game_active = False
+
+    def _check_aliens_bottom(self):
+        """检查是否有外星人到达了屏幕底部"""
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                # 和外星人碰撞到飞船一样的处理
+                self._ship_hit()
+                break
 
     def update_alien(self):
         """更新外星人位置的方法"""
@@ -143,6 +156,9 @@ class AlienInvasion:
         # 检测外星人和飞船之间的碰撞
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
+
+        # 检查是否有外星人到达了屏幕底部
+        self._check_aliens_bottom()
 
     def _update_screen(self):
         """更新屏幕"""
@@ -160,9 +176,10 @@ class AlienInvasion:
         """开始游戏的主循环"""
         while True:
             self._check_event()
-            self.ship.update()
-            self.update_alien()
-            self._update_bullets()
+            if self.game_active:
+                self.ship.update()
+                self.update_alien()
+                self._update_bullets()
             self._update_screen()
             self.clock.tick(165)
 
