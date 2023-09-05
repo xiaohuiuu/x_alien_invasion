@@ -296,3 +296,173 @@ class Ship:
 ### 5 重构\_check_event()方法
 
 随着游戏的开发，此函数又变得越来越长，因此，我们将keydown和keyup拆分成两个方法
+
+```python
+def _check_event(self):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            self._check_key_down(event)
+        elif event.type == pygame.KEYUP:
+            self._check_key_up(event)
+
+
+
+def _check_key_down(self, event):
+     if event.key == pygame.K_RIGHT:
+           self.ship.move_right = True
+     elif event.key == pygame.K_LEFT:
+           self.ship.move_left = True
+
+def _check_key_up(self, event):
+     if event.key == pygame.K_RIGHT:
+     	 self.ship.move_right = False
+     elif event.key == pygame.K_LEFT:
+         self.ship.move_left = False
+```
+
+### 6 按q键退出
+
+```python
+    def _check_key_down(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.move_left = True  
+        elif event.key == pygame.K_q:
+            sys.exit()
+```
+
+### 7 在全屏模式下运行游戏
+
+```python
+def __init__(self):
+    self.settings = Settings()
+    self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    self.settings.screen_width = self.screen.get_rect().width
+    self.settings.screen_height = self.screen.get_rect().height
+```
+
+## 七 简单回顾
+
+## 八 射击
+
+接下来 添加射击子弹的功能，我们将编写在玩家按空格时发射子弹（用 小矩形表示）的代码，子弹将在屏幕中直线上升，并在屏幕到达边缘消失
+
+### 1 添加子弹设置
+
+首先，更新Settings类，在\__init__()方法末尾储存新类Bullet所需的值
+
+```python
+def __init__(self):
+    # 子弹设置
+    self.bullet_speed = 5.0
+    self.bullet_width = 3
+    self.bullet_height = 15
+    self.bullet_color = (60, 60, 60)
+```
+
+### 2 创建Bullet类
+
+```python
+import pygame
+from pygame.sprite import Sprite
+
+
+class Bullet(Sprite):
+    """管理飞船所发射的子弹的类"""
+
+    def __init__(self, ai_game):
+        """在飞船的当前位置创建一个子弹对象"""
+        super().__init__()
+        self.screen = ai_game.screen
+        self.settings = ai_game.settings
+        self.color = ai_game.settings.bullet_color
+
+        # 在(0,0)处创建一个表示子弹的矩形
+        self.rect = pygame.Rect(0, 0, self.settings.bullet_width, self.settings.bullet_height)
+        self.rect.midtop = ai_game.ship.rect.midtop
+
+        # 储存用浮点数表示子弹的y值
+        self.y = float(self.rect.y)
+
+    def update(self):
+        """向上移动子弹"""
+        # 更新子弹的位置
+        self.y -= self.settings.bullet_speed
+        # 更新表示子弹位置
+        self.rect.y = self.y
+
+    def draw_bullet(self):
+        """在屏幕上绘制子弹"""
+        pygame.draw.rect(self.screen, self.color, self.rect)
+```
+
+### 3 将子弹存储到编组中
+
+在定义好Bullet类和必要的设置后，便可以编写代码每一次按下空格发射一颗子弹了，我们将在Alien_invasion类中创建一个编组，来保存所有有效的子弹，一遍管理发射出去的所有的子弹。这个编组是一个Group类（来自pygame.Sprite模块)的一个实例。Group类似于列表，但是提供了有助于开发游戏的额外功能
+
+首先，导入新的Bullet类
+
+```python
+from bullet import Bullet
+```
+
+接下来，在\__init__()中创建用于储存子弹的编组
+
+```python
+def __init__(self):
+    self.ship = Ship(self)
+    self.bullets = pygame.sprite.Group()
+    
+```
+
+然后在while循环中更新子弹的位置
+
+```python
+def run_game(self):
+    while True:
+        self._check_event()
+        self.ship.update()
+        self.bullets.update()
+        self._update_screen()
+        self.clock.tick(165)
+```
+
+### 4 开火
+
+在AlienInvasion中，需要修改\_check_key_down()，以便玩家按空格时发射一颗子弹，还需要修改\_update_screen()，确保在调用flip()前在屏幕上重绘子弹
+
+为了发射子弹，需要做的工作不少，因此编写一个新方法\_fire_bullet()来完成这个任务
+
+```python
+    def _check_key_down(self, event):
+        """检测键盘按下事件"""
+        if event.key == pygame.K_RIGHT:
+            self.ship.move_right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.move_left = True
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
+        # 按q键退出
+        elif event.key == pygame.K_q:
+            sys.exit()
+    
+    def _fire_bullet(self):
+        """创建一颗子弹，并将它加入到bullets中"""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
+        
+    def _update_screen(self):
+        """更新屏幕"""
+        # 让最近绘制的屏幕可见
+        self.screen.fill(self.settings.bg_color)
+        # 画出子弹
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        # 画出飞船
+        self.ship.blitme()
+        pygame.display.flip()
+```
+
