@@ -530,3 +530,56 @@ def _update_bullets(self):
 
 ### 1 创建Alien类
 
+```python
+import pygame
+from pygame.sprite import Sprite
+
+
+class Alien(Sprite):
+    """表示单个外星人的类"""
+    def __init__(self, ai_game):
+        """初始化外星人，并设置起始位置"""
+        super().__init__()
+        self.screen = ai_game.screen
+
+        # 加载外星人图像并设置其rect属性
+        self.image = pygame.image.load('image/alien.png')
+        self.rect = self.image.get_rect()
+
+        # 每个外星人最初都在屏幕的左上角附近
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
+
+        # 储存外星人精确水平位置
+        self.x = float(self.rect.x)
+
+```
+
+### 2 创建Alien实例
+
+要想要第一个外星人出现在屏幕上，我们需要创建Alien实例，这属于初始化工作之一，因此需要将代码放在Alien_Invasion类的\__init__方法的末尾，我们最终会创建一个外星人舰队，设计的工作量不少，因此新建一个
+
+\_create_fleet（）方法
+
+```python
+from alien import Alien
+
+def __init__(self):
+    self.aliens = pygame.sprite.Group()
+    
+    self._create_fleet()
+    
+    
+def _create_fleet(self):
+    """创建一个外星人舰队"""
+    alien = Alien(self)
+    self.aliens = add(alien)
+```
+
+要想外星人现身，需要在\_update_screen()方法中draw
+
+```python
+def _update_screen(self):
+    self.aliens.draw(self.screen)
+```
+

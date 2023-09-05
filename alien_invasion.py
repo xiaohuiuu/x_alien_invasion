@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 title = '星舰大战'
 
@@ -22,6 +23,9 @@ class AlienInvasion:
         self.ship = Ship(self)
         # 子弹
         self.bullets = pygame.sprite.Group()
+        # 外星人舰队
+        self.aliens = pygame.sprite.Group()
+        self._create_fleet()
 
     def _check_event(self):
         """侦听键盘和鼠标事件"""
@@ -67,6 +71,10 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
+    def _create_fleet(self):
+        alien = Alien(self)
+        self.aliens.add(alien)
+
     def _update_screen(self):
         """更新屏幕"""
         # 让最近绘制的屏幕可见
@@ -75,6 +83,7 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         # 画出飞船
+        self.aliens.draw(self.screen)
         self.ship.blitme()
         pygame.display.flip()
 
