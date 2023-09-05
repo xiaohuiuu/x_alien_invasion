@@ -509,3 +509,20 @@ class Settings:
         	self.bullets.add(new_bullet)
 ```
 
+### 7 创建\_update_bullets()方法
+
+编写并仔细检查子弹管理代码后，可以将这些代码移动台一个独立的方法中，以确保Alien_Invasion类整洁。
+
+创建一个名为\_update_bullets的新方法，并放在\_update_screen方法之前。
+
+```python
+def _update_bullets(self):
+    """更新子弹的位置，并删除已经消失的子弹的位置"""
+    # 更新子弹的位置
+    self.bullets.update()
+    # 删除已经消失的子弹
+            for bullet in self.bullets.copy():
+                if bullet.rect.bottom <= 0:
+                    self.bullets.remove(bullet)
+```
+

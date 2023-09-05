@@ -33,17 +33,6 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_key_up(event)
 
-    def _update_screen(self):
-        """更新屏幕"""
-        # 让最近绘制的屏幕可见
-        self.screen.fill(self.settings.bg_color)
-        # 画出子弹
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        # 画出飞船
-        self.ship.blitme()
-        pygame.display.flip()
-
     def _check_key_down(self, event):
         """检测键盘按下事件"""
         if event.key == pygame.K_RIGHT:
@@ -69,16 +58,32 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
+    def _update_bullets(self):
+        """更新子弹的位置，并删除已经消失的子弹的位置"""
+        # 更新子弹的位置
+        self.bullets.update()
+        # 删除已经消失的子弹
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
+
+    def _update_screen(self):
+        """更新屏幕"""
+        # 让最近绘制的屏幕可见
+        self.screen.fill(self.settings.bg_color)
+        # 画出子弹
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        # 画出飞船
+        self.ship.blitme()
+        pygame.display.flip()
+
     def run_game(self):
         """开始游戏的主循环"""
         while True:
             self._check_event()
             self.ship.update()
-            self.bullets.update()
-            # 删除已经消失的子弹
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
+            self._update_bullets()
             self._update_screen()
             self.clock.tick(165)
 
