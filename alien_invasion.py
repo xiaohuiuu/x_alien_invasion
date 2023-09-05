@@ -161,6 +161,8 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.game_active = False
+            # 展示光标
+            pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
         """检查是否有外星人到达了屏幕底部"""

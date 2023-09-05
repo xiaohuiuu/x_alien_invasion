@@ -1095,5 +1095,38 @@ def _check_play_button(self, mouse_pos):
 为了修复这个问题，我们仅在game_active = False时才开始
 
 ```python
+def _check_play_button(self, mouse_pos):
+    """在玩家点击play后开始游戏"""
+    button_clilked = self.play_button.rect.collidepoint(mouse_pos)
+    if button_clilked and not self.game_active:
+        # 重置游戏的统计信息
+        self.stats.reset_stats()
+        self.game_active = True
+
+        # 清空外星人列表和子弹
+        self.bullets.empty()
+        self.aliens.empty()
+
+        # 创建一个新的外星人舰队，并放在底部中央
+        self._create_fleet()
+        self.ship.center_ship()
+```
+
+### 6 隐藏光标
+
+当游戏处于非活跃状态时，我们让光标处于可见，当游戏开始时，隐藏光标
+
+```python
+# 在_check_play_button中添加一下代码
+pygame.mouse.set_visible(False)
+```
+
+游戏结束后，将重新展示光标
+
+在\_ship_hit()中添加一下代码
+
+```python
+# 展示光标
+     pygame.mouse.set_visible(True)
 ```
 
