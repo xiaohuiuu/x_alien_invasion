@@ -601,3 +601,18 @@ def _create_fleet(self):
         current_x += 2 * alien_width
 ```
 
+### 4 重构\_create_fleet()
+
+```python
+def _create_fleet(self):
+    while current_x < (self.setting.screen_width -2 * alien_width):
+        self._create_alien(current_x)
+        current_x += 2 * alien_width
+
+def _create_alien(self, x_position):
+    """创建一个外星人并放在当前行中"""
+    new_alien = Alien(self)
+    new_alien.rect.x = x_position
+    self.aliens.add(new_alien)
+```
+
