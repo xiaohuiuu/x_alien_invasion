@@ -1064,3 +1064,36 @@ def _check_play_button(self, mouse_pos):
         self.game_active = True
 ```
 
+### 4 重置游戏
+
+前面编写的代码只处理了第一次开始游戏的情况，并没有处理游戏结束的情况，
+
+为了每次玩家点击play都重置游戏，需要重置统计信息，删除现有的外星人和子弹，创建一个新的外星舰队并让飞机居中。
+
+```python
+def _check_play_button(self, mouse_pos):
+    """在玩家点击play后开始游戏"""
+    if self.play_button.rect.collidepoint(mouse_pos):
+        # 重置游戏的统计信息
+        self.stats.reset_stats()
+        self.game_active = True
+
+        # 清空外星人列表和子弹
+        self.bullets.empty()
+        self.aliens.empty()
+
+        # 创建一个新的外星人舰队，并放在底部中央
+        self._create_fleet()
+        self.ship.center_ship()
+
+```
+
+### 5 将play按钮切换到非活跃状态
+
+当前存在一个问题，在游戏进行的过程中，即使pygame为渲染play按钮，但不小心鼠标点到之前按钮渲染的位置，游戏将重新开始
+
+为了修复这个问题，我们仅在game_active = False时才开始
+
+```python
+```
+
