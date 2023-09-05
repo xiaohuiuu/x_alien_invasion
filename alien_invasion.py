@@ -56,14 +56,14 @@ class AlienInvasion:
             # 重置游戏的统计信息
             self.stats.reset_stats()
             self.game_active = True
-
             # 清空外星人列表和子弹
             self.bullets.empty()
             self.aliens.empty()
-
             # 创建一个新的外星人舰队，并放在底部中央
             self._create_fleet()
             self.ship.center_ship()
+            # 隐藏光标
+            pygame.mouse.set_visible(False)
 
     def _check_key_down(self, event):
         """检测键盘按下事件"""
