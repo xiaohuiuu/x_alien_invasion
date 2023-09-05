@@ -344,9 +344,9 @@ def __init__(self):
     self.settings.screen_height = self.screen.get_rect().height
 ```
 
-## 七 简单回顾
+## 七：简单回顾
 
-## 八 射击
+## 八：射击
 
 接下来 添加射击子弹的功能，我们将编写在玩家按空格时发射子弹（用 小矩形表示）的代码，子弹将在屏幕中直线上升，并在屏幕到达边缘消失
 
@@ -526,7 +526,7 @@ def _update_bullets(self):
                     self.bullets.remove(bullet)
 ```
 
-## 九 创建第一个外星人
+## 九：创建第一个外星人
 
 ### 1 创建Alien类
 
@@ -644,7 +644,7 @@ def _create_alien(self, x_position, y_position):
     self.aliens.add(new_alien)
 ```
 
-## 十 让外星舰队移动
+## 十 ：让外星舰队移动
 
 ### 1 向右移动外星舰队
 
@@ -721,10 +721,10 @@ def update(self):
 对update_alien()的修改
 
 ```python
-    def update_alien(self):
-        """更新外星人位置的方法"""
-        self._check_fleet_edges()
-        self.aliens.update()
+def update_alien(self):
+    """更新外星人位置的方法"""
+    self._check_fleet_edges()
+    self.aliens.update()
 ```
 
 ## 十一：击落外星人
@@ -787,5 +787,87 @@ def _update_bullets(self):
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+```
+
+## 十二：结束游戏
+
+如果玩家没有在足够短的时间内击败所有的外星人，导致有外星人撞到了飞船或到达了屏幕的下边缘，飞船将被摧毁，与此同时，我们会限制飞船的数量，在玩家用光所有的飞船后，游戏将结束。
+
+### 1 检查外星人和飞船的碰撞
+
+```python
+def _update_alien(self):
+    
+    # 检测外星人和飞船的碰撞
+    if pygame.sprite.spritecollideany(self.ship, self.aliens):
+        print('ship hit')
+```
+
+### 2 响应外星人和飞船的碰撞
+
+我们需要确定，当外星人和飞船发生碰撞后，该做些什么，我们不是销毁ship实例再创建，而是跟踪游戏的统计信息来几率飞船碰撞了几次
+
+下面来编写用于统计游戏信息的新类GameStats,保存为game_stats.py
+
+```python
+class GameStats:
+    """跟踪游戏的统计信息"""
+
+    def __init__(self, ai_game):
+        """初始化信息"""
+        self.settings = ai_game.settings
+        self.ships_left = 0
+        self.reset_stats()
+
+    def reset_stats(self):
+        """初始化在游戏运行期间可能变化的统计信息"""
+        self.ships_left = self.settings.ship_limit
+```
+
+AlienInvasion也需要实例化这个类
+
+```python
+from time import sleep
+from game_stats import GameStats
+class AlienInvasion:
+    def __init__(self):
+        # 实例化gamestats
+        self.stats = GameStats(self)
+        
+```
+
+当外星人撞到飞船后，将剩余飞船数量-1，并创建一个新的外星舰队，并将飞船重新放在底部中间，并让游戏暂停一会，让玩家意识到撞到了飞船，并在创建新的外星舰队前重整旗鼓
+
+```python
+def _ship_hit(self):
+    """响应飞船和外星人的碰撞"""
+    # 将ship_left -1
+    self.stats.ships_left -= 1
+    # 清空外星人列表和子弹列表
+    self.bullets.empty()
+    self.aliens.empty()
+    # 创建一个新的外星人舰队,并将飞船放在屏幕底部的中央
+    self._create_alien()
+    self.ship.center_ship()
+    # 暂停
+    sleep(0.5)
+```
+
+在\_update_aliens()中，当有外星人撞到飞船使，使用\_ship_hit()函数
+
+```python
+def update_alien(self):
+    """更新外星人位置的方法"""
+    self._check_fleet_edges()
+    self.aliens.update()
+
+    # 检测外星人和飞船之间的碰撞
+    if pygame.sprite.spritecollideany(self.ship, self.aliens):
+        self._ship_hit()
+```
+
+将center_ship(self)添加到ship类中
+
+```python
 ```
 

@@ -11,6 +11,7 @@ class Settings:
         self.bg_color = (230, 230, 230)
         # 控制飞船的速度
         self.ship_speed = 5
+        self.ship_limit = 3
 
         # 子弹设置
         self.bullet_speed = 5.0
@@ -22,6 +23,6 @@ class Settings:
         # 外星人相关设置
         self.alien_speed = 1.0
         # 外星人到达右边缘后向下移动的速度
-        self.fleet_drop_speed = 4
+        self.fleet_drop_speed = 20
         # 移动方向
         self.fleet_direction = 1
