@@ -1195,5 +1195,17 @@ class Settings:
 在\_check_bullet_alien_alien_collisions(self)中，在整个外星舰队被击落时调用increase_speed()来加快节奏
 
 ```python
+def _check_bullet_alien_collisions(self):
+    self.settings.increase_speed()
+```
+
+### 2 重置速度
+
+每当玩家开始新的游戏时，需要将变化的设置还原为初始值
+
+```python
+def _check_play_button(self):
+    # 还原游戏设置
+    self.settings.initialize_dynamic_settings()
 ```
 
