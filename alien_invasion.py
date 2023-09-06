@@ -3,6 +3,7 @@ import pygame
 from time import sleep
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import ScoreBoard
 from button import Button
 from ship import Ship
 from bullet import Bullet
@@ -26,6 +27,8 @@ class AlienInvasion:
         self.clock = pygame.time.Clock()
         # 实例化GameStats
         self.stats = GameStats(self)
+        # 实例化ScoreBoard
+        self.sb = ScoreBoard(self)
         # 创建play按钮
         self.play_button = Button(self, 'Play')
         # 实例化飞船
@@ -197,6 +200,8 @@ class AlienInvasion:
         # 画出飞船
         self.aliens.draw(self.screen)
         self.ship.blitme()
+        # 绘制计分
+        self.sb.show_score()
         # 如果游戏处于非活跃状态（game_active = False)，绘制play按钮
         if not self.game_active:
             self.play_button.draw_button()
